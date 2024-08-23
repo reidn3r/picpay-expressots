@@ -17,5 +17,10 @@ export class TransactionController extends BaseController{
         return this.callUseCase(this.useCase.newTransaction(payer_id, payee_id, amount), res, 201);
     }
 
+    @Get("/transaction/:id")
+    transactionDetails(){
+        return;
+    }
+
 
 }
