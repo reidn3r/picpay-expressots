@@ -13,21 +13,49 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ROLE {
+  CONSUMER
+  STOREKEEPER
+}
+
 model User {
-  id       String @id @default(uuid())
-  name     String
-  email    String
-  password String
-  role     String
-  balance  Float  @default(0)
+  id          String       @id @default(uuid())
+  name        String
+  email       String
+  password    String
+  role        ROLE         @default(CONSUMER)
+  balance     Float        @default(0)
+  Storekeeper Storekeeper?
+  Consumer    Consumer?
+
+  transactionsPayer Transactions[] @relation("PayerTransactions")
+  transactionsPayee Transactions[] @relation("PayeeTransactions")
 }
 
 model Storekeeper {
   id   String @id @default(uuid())
   cnpj String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
 }
 
 model Consumer {
   id  String @id @default(uuid())
   cpf String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+}
+
+model Transactions {
+  id        String   @id @default(uuid())
+  amount    Float    @default(0)
+  createdAt DateTime @default(now())
+
+  payer   User   @relation("PayerTransactions", fields: [payerId], references: [id])
+  payerId String
+
+  payee   User   @relation("PayeeTransactions", fields: [payeeId], references: [id])
+  payeeId String
 }
