@@ -1,0 +1,16 @@
+version: '3.0'
+
+services:
+  transacions_postgresql:
+    image: postgres
+    environment:
+      - POSTGRES_DB=transactions_db
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    ports:
+      - '5432:5432'
+    volumes:
+      - transacions_data:/var/lib/postgresql/data
+
+volumes:
+  transacions_data:
