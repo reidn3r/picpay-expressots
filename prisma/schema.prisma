@@ -21,7 +21,7 @@ enum ROLE {
 model User {
   id          String       @id @default(uuid())
   name        String
-  email       String
+  email       String       @unique
   password    String
   role        ROLE         @default(CONSUMER)
   balance     Float        @default(0)
@@ -34,7 +34,7 @@ model User {
 
 model Storekeeper {
   id   String @id @default(uuid())
-  cnpj String
+  cnpj String @unique
 
   user   User   @relation(fields: [userId], references: [id])
   userId String @unique
@@ -42,7 +42,7 @@ model Storekeeper {
 
 model Consumer {
   id  String @id @default(uuid())
-  cpf String
+  cpf String @unique
 
   user   User   @relation(fields: [userId], references: [id])
   userId String @unique

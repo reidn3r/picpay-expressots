@@ -8,7 +8,7 @@ export interface IUserBaseRepository<T> {
     createStorekeeper(data:NewUser):Promise<Storekeeper | null>;
     findByEmail(email:string): Promise<User | null>;
     delete(id:String):Promise<String | null>;
-    findUserById(id:String):Promise<T | null>;
+    findUserById(id:String):Promise<User | null>;
     findAll():Promise<T[]>
     
 }

@@ -14,12 +14,12 @@ export class UserRepository implements IUserBaseRepository<Consumer> {
     }
 
     async createUser(data: Consumer): Promise<Consumer | null> {
-        return this.db.consumer.create({ data });
+        return await this.db.consumer.create({ data });
     }
 
     async createConsumer(data: NewUser): Promise<Consumer | null> {
         if (data.cpf) {
-            return await prisma.consumer.create({
+            return await this.db.consumer.create({
                 data: {
                     cpf: data.cpf,
                     user: {
@@ -38,7 +38,7 @@ export class UserRepository implements IUserBaseRepository<Consumer> {
     
     async createStorekeeper(data: NewUser): Promise<Storekeeper | null> {
         if(data.cnpj){
-            return await prisma.storekeeper.create({
+            return await this.db.storekeeper.create({
                 data:{
                     cnpj: data.cnpj,
                     user:{
@@ -57,15 +57,15 @@ export class UserRepository implements IUserBaseRepository<Consumer> {
         
     }
 
-    async findUserById(id: string): Promise<Consumer | null> {
-        return this.db.consumer.findUnique({
+    async findUserById(id: string): Promise<User | null> {
+        return await this.db.user.findUnique({
             where: { id }
         });
     }
 
     async findByEmail(email:string): Promise<User | null>{
-        return await this.db.user.findFirst({
-            where:{
+        return await this.db.user.findUnique({
+            where: {
                 email
             }
         })
@@ -76,6 +76,6 @@ export class UserRepository implements IUserBaseRepository<Consumer> {
     }
 
     async findAll(): Promise<Consumer[]> {
-        return this.db.consumer.findMany();
+        return await this.db.consumer.findMany();
     }
 }

@@ -2,7 +2,7 @@ import { controller, Post, request, response } from "@expressots/adapter-express
 import { Request, Response } from "express";
 import { BaseController, StatusCode } from "@expressots/core";
 import { UserUsecase } from "./users.usecase";
-import { ROLE } from "@prisma/client";
+import { ROLE, User } from "@prisma/client";
 
 export type NewUser = {
     name:string,
@@ -24,13 +24,12 @@ export class UserController extends BaseController {
     }
 
     @Post("/create/user")
-    createNewUser(@request() req:Request, @response() res:Response){
+    createNewUser(@request() req:Request, @response() res:Response):Promise<User>{
         const { email, name, password, role, cpf, cnpj, balance } = req.body;
         const newUser:NewUser = { 
                 email, name, password, 
                 role, cpf, cnpj, balance
         };
-
         return this.callUseCase(this.userUsecase.createNewUser(newUser), res, StatusCode.Created);
     }
 }
