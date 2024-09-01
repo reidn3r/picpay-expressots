@@ -17,6 +17,9 @@ export class UserUsecase {
             if(user.role === "CONSUMER" && user.cnpj) throw new Error("Error: Consumer is not allowed to register a CNPJ");
             if(user.role === "STOREKEEPER" && user.cpf) throw new Error("Error: Storekeeper is not allowed to register a CPF");
             
+            const foundUser = await this.userExists(user);
+            if(foundUser) throw new Error("Error: User already exists");
+
             if(user.cpf && this.isConsumer(user)){
                 return await this.userRepository.createConsumer(user);
             }
@@ -30,6 +33,11 @@ export class UserUsecase {
         catch(err:any){
             throw new Error(err.message);
         }
+    }
+
+    private async userExists(user:NewUser):Promise<boolean>{
+        const foundUser = await this.userRepository.findByEmail(user.email);
+        return foundUser ? true : false;
     }
     
     private isConsumer(user:NewUser):boolean{
