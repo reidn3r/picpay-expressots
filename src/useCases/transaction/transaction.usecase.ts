@@ -1,10 +1,8 @@
 import { provide } from "@expressots/core";
-import { TransactionRepository } from "repository/transaction/transactions.repository";
 import { Transactions } from "@prisma/client";
 import { NewTransaction } from "./transaction.controller";
 import { inject } from "inversify";
 import { User } from "@prisma/client";
-import { UserRepository } from "repository/users/user.repository";
 import { PrismaProvider } from "@providers/prisma/prisma.provider";
 import { AxiosProvider } from "@providers/axios/axios.provider";
 
@@ -22,29 +20,28 @@ export class TransactionUsecase {
         this.axiosProvider = axiosProvider;
     }
 
-    async createTransaction(transaction:NewTransaction):Promise<NewTransaction | null>{
-        try{
-            let authorized:boolean = false;
-
-            const [ payerUser, payeeUser ] = await Promise.all([
+    async createTransaction(transaction: NewTransaction): Promise<NewTransaction | null> {
+        try {
+            const [payerUser, payeeUser] = await Promise.all([
                 this.prismaProvider.findUserById(transaction.payerId),
                 this.prismaProvider.findUserById(transaction.payeeId)
             ]);
     
-            if(!payerUser || !payeeUser) throw new Error("Error: User not found");
-            if(payerUser.role == "STOREKEEPER") throw new Error("Error: Storekeeper is not authorized to make payments");
-            
-            authorized = await this.axiosProvider.isAuthorized();
-            if(!authorized) throw new Error("Error: Service not authorized to make transactions");
-
-            if(!this.userHasFunds(payerUser, transaction.amount)) throw new Error("Error: Payer has not sufficient funds");
+            if (!payerUser || !payeeUser) throw new Error("Error: User not found");
+            if (payerUser.role == "STOREKEEPER") throw new Error("Error: Storekeeper is not authorized to make payments");
+    
+            const authorized = await this.axiosProvider.isAuthorized();
+            if (!authorized) throw new Error("Error: Service not authorized to make transactions");
+    
+            if (!this.userHasFunds(payerUser, transaction.amount)) throw new Error("Error: Payer has not sufficient funds");
+    
             return this.prismaProvider.createTransaction(transaction);
-        }
-        catch(err:any){
+        } catch (err: any) {
             console.log(err.message);
             throw new Error(err.message);
         }
     }
+    
     
     private userHasFunds(user:User, value:number):boolean{
         return user.balance >= value;
