@@ -3,7 +3,7 @@ import { NewUser } from "@useCases/users/users.controller";
 
 export interface IUserBaseRepository<T> {
 
-    createUser(data:T):Promise<T | null>;
+    // createUser(data:T):Promise<T | null>;
     createConsumer(data: NewUser):Promise<Consumer | null>;
     createStorekeeper(data:NewUser):Promise<Storekeeper | null>;
     findByEmail(email:string): Promise<User | null>;

@@ -13,10 +13,6 @@ export class UserRepository implements IUserBaseRepository<Consumer> {
         this.db = prisma;
     }
 
-    async createUser(data: Consumer): Promise<Consumer | null> {
-        return await this.db.consumer.create({ data });
-    }
-
     async createConsumer(data: NewUser): Promise<Consumer | null> {
         if (data.cpf) {
             return await this.db.consumer.create({

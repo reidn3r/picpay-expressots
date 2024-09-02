@@ -2,14 +2,15 @@ import { provide } from "@expressots/core";
 import { NewUser } from "./users.controller";
 import { inject } from "inversify";
 import { UserRepository } from "repository/users/user.repository";
+import { PrismaProvider } from "@providers/prisma/prisma.provider";
 
 @provide(UserUsecase)
 export class UserUsecase {
 
-    private userRepository:UserRepository;
+    private prismaProvider:PrismaProvider;
 
-    constructor(@inject(UserRepository) userRepository:UserRepository){
-        this.userRepository = userRepository;
+    constructor(@inject(PrismaProvider) prismaProvider){
+        this.prismaProvider = prismaProvider;
     }
 
     async createNewUser(user:NewUser){
@@ -21,11 +22,11 @@ export class UserUsecase {
             if(foundUser) throw new Error("Error: User already exists");
 
             if(user.cpf && this.isConsumer(user)){
-                return await this.userRepository.createConsumer(user);
+                return await this.prismaProvider.createConsumer(user);
             }
 
             if(user.cnpj && this.isStorekeeper(user)){
-                return await this.userRepository.createStorekeeper(user);
+                return await this.prismaProvider.createStorekeeper(user);
             }
 
             throw new Error("Error: error while creating new user");
@@ -36,7 +37,7 @@ export class UserUsecase {
     }
 
     private async userExists(user:NewUser):Promise<boolean>{
-        const foundUser = await this.userRepository.findByEmail(user.email);
+        const foundUser = await this.prismaProvider.findByEmail(user.email);
         return foundUser ? true : false;
     }
     

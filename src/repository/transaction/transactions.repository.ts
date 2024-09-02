@@ -15,13 +15,21 @@ export class TransactionRepository implements ITransactionsBaseRepository<Transa
     }
 
     async create(data:NewTransaction):Promise<Transactions | null>{
-        return await this.db.transactions.create({
-            data:{
-                payeeId: data.payeeId,
-                payerId: data.payerId,
-                amount: data.amount
-            }}
-        );
+        //Update funds and create transaction
+        const [updatedPayeeFunds, updatedPayerFunds, transaction] = await Promise.all([
+            this.db.user.update({
+                where: { id: data.payeeId },
+                data:{ balance : { increment: data.amount } }
+            }),
+            this.db.user.update({
+                where: { id: data.payerId },
+                data:{ balance : { decrement: data.amount } }
+            }),
+            this.db.transactions.create({
+                data:{ payeeId: data.payeeId, payerId: data.payerId, amount: data.amount }
+            })
+        ])
+        return transaction;
     }
     
     async delete(id:String):Promise<String | null>{
