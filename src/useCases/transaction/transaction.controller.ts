@@ -2,32 +2,38 @@ import { controller, Get, Post, request, response } from '@expressots/adapter-ex
 import { BaseController, StatusCode } from '@expressots/core';
 import { Request, Response } from 'express';
 import { TransactionUsecase } from './transaction.usecase';
+import { ZodProvider } from '@providers/zod/zod.provider';
 
 export type NewTransaction = {
     amount:number,
     payeeId:string,
     payerId:string,
-
 }
 
 @controller("/v1")
 export class TransactionController extends BaseController{
+    private useCase:TransactionUsecase;
+    private zodProvider:ZodProvider;
 
-    constructor(private useCase:TransactionUsecase){
+    constructor(
+        useCase:TransactionUsecase,
+        zodProvider:ZodProvider
+    ){
         super();
+        this.useCase = useCase;
+        this.zodProvider = zodProvider;
     }
 
     @Post("/create/transaction")
     createTransaction(@request() req:Request, @response() res:Response){
-        const { payer_id, payee_id, amount } = req.body;
-        
-        const newTransaction:NewTransaction = {
-            amount:amount,
-            payeeId:payee_id,
-            payerId:payer_id,
+        try{
+            const newTransaction = this.zodProvider.parseNewTransaction(req.body);
+            return this.callUseCaseAsync(this.useCase.createTransaction(newTransaction), res, StatusCode.Created);
+        }
+        catch(err:any){
+            throw new Error("Error validating input data");
         }
 
-        return this.callUseCaseAsync(this.useCase.createTransaction(newTransaction), res, StatusCode.Created);
     }
     
     @Get("/transaction/:id")
