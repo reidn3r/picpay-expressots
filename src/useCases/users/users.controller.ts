@@ -2,10 +2,10 @@ import { controller, Post, request, response } from "@expressots/adapter-express
 import { Request, Response } from "express";
 import { BaseController, StatusCode } from "@expressots/core";
 import { UserUsecase } from "./users.usecase";
-import { ROLE, User } from "@prisma/client";
+import { ROLE } from "@prisma/client";
 import { ZodProvider } from "@providers/zod/zod.provider";
 
-export type NewUser = {
+export type UserDTO = {
     name:string,
     email:string,
     password:string,

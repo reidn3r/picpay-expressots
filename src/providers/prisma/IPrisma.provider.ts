@@ -1,9 +1,9 @@
 import { Consumer, Storekeeper, Transactions, User } from "@prisma/client";
-import { NewTransaction } from "@useCases/transaction/transaction.controller";
-import { NewUser } from "@useCases/users/users.controller";
+import { TransactionDTO } from "@useCases/transaction/transaction.controller";
+import { UserDTO } from "@useCases/users/users.controller";
 
 export interface IPrismaProvider {
-    createTransaction(transaction:NewTransaction): Promise<NewTransaction | null>;
+    createTransaction(transaction:TransactionDTO): Promise<TransactionDTO | null>;
 
     findTransactionById(id:String): Promise<Transactions | null>;
 
@@ -11,9 +11,9 @@ export interface IPrismaProvider {
 
     // createUser(data: NewUser): Promise<NewUser | null>;
 
-    createConsumer(data: NewUser): Promise<Consumer | null>;
+    createConsumer(data: UserDTO): Promise<Consumer | null>;
 
-    createStorekeeper(data: NewUser): Promise<Storekeeper | null>;
+    createStorekeeper(data: UserDTO): Promise<Storekeeper | null>;
 
     findUserById(id: string): Promise<User | null>;
 

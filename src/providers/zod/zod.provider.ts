@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { NewTransaction } from '@useCases/transaction/transaction.controller';
-import { NewUser } from '@useCases/users/users.controller';
+import { TransactionDTO } from '@useCases/transaction/transaction.controller';
+import { UserDTO } from '@useCases/users/users.controller';
 import { ROLE } from '@prisma/client';
 import { provide } from '@expressots/core';
 
@@ -30,7 +30,7 @@ export class ZodProvider {
     
     
     
-    parseNewTransaction(data: NewTransaction): NewTransaction {
+    parseNewTransaction(data: TransactionDTO): TransactionDTO {
         try {
             return this.newTransactionSchema.parse(data);
         } catch (e: any) {
@@ -38,7 +38,7 @@ export class ZodProvider {
         }
     }
 
-    parseNewUser(data: NewUser): NewUser {
+    parseNewUser(data: UserDTO): UserDTO {
         try {
             return this.newUserSchema.parse(data);            
         } catch (err: any) {

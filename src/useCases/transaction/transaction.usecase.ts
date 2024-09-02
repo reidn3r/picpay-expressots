@@ -1,6 +1,6 @@
 import { provide } from "@expressots/core";
 import { Transactions } from "@prisma/client";
-import { NewTransaction } from "./transaction.controller";
+import { TransactionDTO } from "./transaction.controller";
 import { inject } from "inversify";
 import { User } from "@prisma/client";
 import { PrismaProvider } from "@providers/prisma/prisma.provider";
@@ -20,7 +20,7 @@ export class TransactionUsecase {
         this.axiosProvider = axiosProvider;
     }
 
-    async createTransaction(transaction: NewTransaction): Promise<NewTransaction | null> {
+    async createTransaction(transaction: TransactionDTO): Promise<TransactionDTO | null> {
         try {
             const [payerUser, payeeUser] = await Promise.all([
                 this.prismaProvider.findUserById(transaction.payerId),

@@ -3,9 +3,9 @@ import { Consumer, Storekeeper, Transactions, User } from '@prisma/client';
 import { IPrismaProvider } from "./IPrisma.provider";
 import { inject } from "inversify";
 import { TransactionRepository } from "repository/transaction/transactions.repository";
-import { NewTransaction } from "@useCases/transaction/transaction.controller";
+import { TransactionDTO } from "@useCases/transaction/transaction.controller";
 import { AxiosProvider } from "@providers/axios/axios.provider";
-import { NewUser } from "@useCases/users/users.controller";
+import { UserDTO } from "@useCases/users/users.controller";
 import { UserRepository } from "repository/users/user.repository";
 
 
@@ -26,8 +26,8 @@ export class PrismaProvider implements IPrismaProvider{
         this.axiosProvider = axiosProvider;
     }
 
-    async createTransaction(transaction:NewTransaction): Promise<NewTransaction | null> {
-        const newTransaction:NewTransaction | null = await this.transactionRepository.create(transaction);
+    async createTransaction(transaction:TransactionDTO): Promise<TransactionDTO | null> {
+        const newTransaction:TransactionDTO | null = await this.transactionRepository.create(transaction);
         await this.axiosProvider.notify();
         return newTransaction;
     }
@@ -40,7 +40,7 @@ export class PrismaProvider implements IPrismaProvider{
         return this.transactionRepository.findAll();
     }
 
-    async createConsumer(data: NewUser): Promise<Consumer | null> {
+    async createConsumer(data: UserDTO): Promise<Consumer | null> {
         try{
             if (data.cpf) return await this.userRepository.createConsumer(data);
             return null;
@@ -51,7 +51,7 @@ export class PrismaProvider implements IPrismaProvider{
         }
     }
     
-    async createStorekeeper(data: NewUser): Promise<Storekeeper | null> {
+    async createStorekeeper(data: UserDTO): Promise<Storekeeper | null> {
         if(data.cnpj){
             return await this.userRepository.createStorekeeper(data);
         }

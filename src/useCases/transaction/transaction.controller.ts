@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import { TransactionUsecase } from './transaction.usecase';
 import { ZodProvider } from '@providers/zod/zod.provider';
 
-export type NewTransaction = {
+export type TransactionDTO = {
     amount:number,
     payeeId:string,
     payerId:string,

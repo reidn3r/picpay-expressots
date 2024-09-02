@@ -1,5 +1,5 @@
 import { provide } from "@expressots/core";
-import { NewUser } from "./users.controller";
+import { UserDTO } from "./users.controller";
 import { inject } from "inversify";
 import { PrismaProvider } from "@providers/prisma/prisma.provider";
 
@@ -14,7 +14,7 @@ export class UserUsecase {
         this.prismaProvider = prismaProvider;
     }
 
-    async createNewUser(user:NewUser){
+    async createNewUser(user:UserDTO){
         try{
             if(user.role === "CONSUMER" && user.cnpj) throw new Error("Error: Consumer is not allowed to register a CNPJ");
             if(user.role === "STOREKEEPER" && user.cpf) throw new Error("Error: Storekeeper is not allowed to register a CPF");
@@ -38,19 +38,19 @@ export class UserUsecase {
         }
     }
 
-    private async userExists(user:NewUser):Promise<boolean>{
+    private async userExists(user:UserDTO):Promise<boolean>{
         const foundUser = await this.prismaProvider.findByEmail(user.email);
         return foundUser ? true : false;
     }
     
-    private isConsumer(user:NewUser):boolean{
+    private isConsumer(user:UserDTO):boolean{
         if(!user.role || user.role == "STOREKEEPER") return false;
         if(user.role === "CONSUMER" && user.cnpj) return false;
         if(user.role === "CONSUMER" && user.cpf && user.cnpj) return false;
         if(user.role === "CONSUMER" && user.cpf) return true;
         return false;
     }
-    private isStorekeeper(user:NewUser):boolean{
+    private isStorekeeper(user:UserDTO):boolean{
         if(!user.role || user.role == "CONSUMER") return false;
         if(user.role === "STOREKEEPER" && user.cpf) return false;
         if(user.role === "STOREKEEPER" && user.cpf && user.cnpj) return false;
