@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { BaseController, StatusCode } from "@expressots/core";
 import { UserUsecase } from "./users.usecase";
 import { ROLE, User } from "@prisma/client";
+import { ZodProvider } from "@providers/zod/zod.provider";
 
 export type NewUser = {
     name:string,
@@ -17,20 +18,27 @@ export type NewUser = {
 @controller("/v1")
 export class UserController extends BaseController {
     private userUsecase:UserUsecase;
+    private zodProvider:ZodProvider;
 
-    constructor(userUsecase:UserUsecase){
+    constructor(
+        userUsecase:UserUsecase,
+        zodProvider:ZodProvider
+
+    ){
         super();
         this.userUsecase = userUsecase;
+        this.zodProvider = zodProvider;
     }
 
     @Post("/create/user")
-    createNewUser(@request() req:Request, @response() res:Response):Promise<User>{
-        const { email, name, password, role, cpf, cnpj, balance } = req.body;
-        const newUser:NewUser = { 
-                email, name, password, 
-                role, cpf, cnpj, balance
-        };
-        return this.callUseCase(this.userUsecase.createNewUser(newUser), res, StatusCode.Created);
+    createNewUser(@request() req:Request, @response() res:Response):Promise<User>{        
+        try{
+            const newUser = this.zodProvider.parseNewUser(req.body);
+            return this.callUseCase(this.userUsecase.createNewUser(newUser), res, StatusCode.Created);
+        }
+        catch(err:any){
+            throw new Error("Error validating input data");
+        }
     }
 }
 

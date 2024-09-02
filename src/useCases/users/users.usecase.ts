@@ -3,13 +3,16 @@ import { NewUser } from "./users.controller";
 import { inject } from "inversify";
 import { UserRepository } from "repository/users/user.repository";
 import { PrismaProvider } from "@providers/prisma/prisma.provider";
+import { ZodProvider } from "@providers/zod/zod.provider";
 
 @provide(UserUsecase)
 export class UserUsecase {
 
     private prismaProvider:PrismaProvider;
 
-    constructor(@inject(PrismaProvider) prismaProvider){
+    constructor(
+        @inject(PrismaProvider) prismaProvider:PrismaProvider,
+    ){
         this.prismaProvider = prismaProvider;
     }
 
