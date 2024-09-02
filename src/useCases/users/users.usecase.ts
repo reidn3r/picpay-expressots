@@ -1,9 +1,7 @@
 import { provide } from "@expressots/core";
 import { NewUser } from "./users.controller";
 import { inject } from "inversify";
-import { UserRepository } from "repository/users/user.repository";
 import { PrismaProvider } from "@providers/prisma/prisma.provider";
-import { ZodProvider } from "@providers/zod/zod.provider";
 
 @provide(UserUsecase)
 export class UserUsecase {
@@ -35,6 +33,7 @@ export class UserUsecase {
             throw new Error("Error: error while creating new user");
         }
         catch(err:any){
+            console.log(err.message);
             throw new Error(err.message);
         }
     }

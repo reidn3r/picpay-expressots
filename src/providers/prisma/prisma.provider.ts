@@ -41,10 +41,14 @@ export class PrismaProvider implements IPrismaProvider{
     }
 
     async createConsumer(data: NewUser): Promise<Consumer | null> {
-        if (data.cpf) {
-            return await this.userRepository.createConsumer(data);
+        try{
+            if (data.cpf) return await this.userRepository.createConsumer(data);
+            return null;
         }
-        return null;
+        catch(err:any){
+            console.log(err.message);
+            throw new Error(err.message);
+        }
     }
     
     async createStorekeeper(data: NewUser): Promise<Storekeeper | null> {

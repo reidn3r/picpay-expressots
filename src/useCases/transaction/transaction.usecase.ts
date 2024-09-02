@@ -41,10 +41,11 @@ export class TransactionUsecase {
             return this.prismaProvider.createTransaction(transaction);
         }
         catch(err:any){
+            console.log(err.message);
             throw new Error(err.message);
         }
     }
-
+    
     private userHasFunds(user:User, value:number):boolean{
         return user.balance >= value;
     }

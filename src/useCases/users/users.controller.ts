@@ -11,8 +11,8 @@ export type NewUser = {
     password:string,
     role:ROLE,
     balance:number
-    cpf:string | null;
-    cnpj:string | null;
+    cpf?:string | null;
+    cnpj?:string | null;
 }
 
 @controller("/v1")
@@ -31,10 +31,10 @@ export class UserController extends BaseController {
     }
 
     @Post("/create/user")
-    createNewUser(@request() req:Request, @response() res:Response):Promise<User>{        
+    createNewUser(@request() req:Request, @response() res:Response){        
         try{
-            const newUser = this.zodProvider.parseNewUser(req.body);
-            return this.callUseCase(this.userUsecase.createNewUser(newUser), res, StatusCode.Created);
+            const input_data = this.zodProvider.parseNewUser(req.body);
+            return this.callUseCaseAsync(this.userUsecase.createNewUser(input_data), res, StatusCode.Created);
         }
         catch(err:any){
             throw new Error("Error validating input data");
