@@ -18,7 +18,7 @@ export class UserController extends BaseController {
     @Post("/create/user", ValidateDTO(CreateUserDTO))
     createNewUser(@body() payload:CreateUserDTO,  @response() res:Response){        
         try{
-            return res.status(StatusCode.Created).json(this.userUsecase.createNewUser(payload));
+            return this.callUseCaseAsync(this.userUsecase.createNewUser(payload), res, StatusCode.Created);
         }
         catch(err:any){
             throw new Error("Error validating input data");

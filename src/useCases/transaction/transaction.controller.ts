@@ -18,7 +18,7 @@ export class TransactionController extends BaseController{
     @Post("/create/transaction", ValidateDTO(CreateTransactionDTO))
     createTransaction(@body() payload:CreateTransactionDTO, @response() res:Response){
         try{
-            return res.status(StatusCode.Created).json(this.useCase.createTransaction(payload));
+            return this.callUseCaseAsync(this.useCase.createTransaction(payload), res, StatusCode.Created);
         }
         catch(err:any){
             throw new Error("Error validating input data");
@@ -26,9 +26,10 @@ export class TransactionController extends BaseController{
 
     }
     
-    @Get("/transaction/:id")
+    @Get("/transaction/all")
     transactionDetails(@response() res:Response){
-        return res.status(StatusCode.OK).json(this.useCase.findAllTransactions());
+        // return res.status(StatusCode.OK).json(this.useCase.findAllTransactions());
+        return this.callUseCaseAsync(this.useCase.findAllTransactions(), res, StatusCode.Created);
     }
 
 
