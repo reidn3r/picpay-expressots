@@ -21,6 +21,7 @@
     "@expressots/core": "latest",
     "@prisma/client": "^5.19.0",
     "axios": "^1.7.7",
+    "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cors": "^2.8.5",

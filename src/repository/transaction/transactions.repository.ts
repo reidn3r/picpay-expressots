@@ -1,7 +1,6 @@
 import { provide } from "@expressots/core";
 import { ITransactionsBaseRepository } from "./ITransactionsBaseRepository";
 import { PrismaClient, Transactions } from "@prisma/client";
-import { TransactionDTO } from "@useCases/transaction/transaction.controller";
 import { prisma } from "db/prisma";
 import { CreateTransactionDTO } from "dto/transactions/transactions.dto";
 
@@ -15,7 +14,7 @@ export class TransactionRepository implements ITransactionsBaseRepository<Transa
         this.db = prisma;
     }
 
-    async create(data:TransactionDTO):Promise<Transactions | null>{
+    async create(data:CreateTransactionDTO):Promise<Transactions | null>{
         //Update funds and create transaction
         const [updatedPayeeFunds, updatedPayerFunds, transaction] = await Promise.all([
             this.db.user.update({

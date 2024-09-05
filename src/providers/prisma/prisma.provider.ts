@@ -3,10 +3,10 @@ import { Consumer, Storekeeper, Transactions, User } from '@prisma/client';
 import { IPrismaProvider } from "./IPrisma.provider";
 import { inject } from "inversify";
 import { TransactionRepository } from "repository/transaction/transactions.repository";
-import { TransactionDTO } from "@useCases/transaction/transaction.controller";
 import { AxiosProvider } from "@providers/axios/axios.provider";
-import { UserDTO } from "@useCases/users/users.controller";
 import { UserRepository } from "repository/users/user.repository";
+import { CreateTransactionDTO } from "dto/transactions/transactions.dto";
+import { CreateUserDTO } from "dto/users/users.dto";
 
 @provide(PrismaProvider)
 export class PrismaProvider implements IPrismaProvider{
@@ -25,8 +25,8 @@ export class PrismaProvider implements IPrismaProvider{
         this.axiosProvider = axiosProvider;
     }
 
-    async createTransaction(transaction:TransactionDTO): Promise<TransactionDTO | null> {
-        const newTransaction:TransactionDTO | null = await this.transactionRepository.create(transaction);
+    async createTransaction(transaction:CreateTransactionDTO): Promise<CreateTransactionDTO | null> {
+        const newTransaction:CreateTransactionDTO | null = await this.transactionRepository.create(transaction);
         await this.axiosProvider.notify();
         return newTransaction;
     }
@@ -39,7 +39,7 @@ export class PrismaProvider implements IPrismaProvider{
         return this.transactionRepository.findAll();
     }
 
-    async createConsumer(data: UserDTO): Promise<Consumer | null> {
+    async createConsumer(data: CreateUserDTO): Promise<Consumer | null> {
         try{
             if (data.cpf) return await this.userRepository.createConsumer(data);
             return null;
@@ -50,7 +50,7 @@ export class PrismaProvider implements IPrismaProvider{
         }
     }
     
-    async createStorekeeper(data: UserDTO): Promise<Storekeeper | null> {
+    async createStorekeeper(data: CreateUserDTO): Promise<Storekeeper | null> {
         if(data.cnpj){
             return await this.userRepository.createStorekeeper(data);
         }

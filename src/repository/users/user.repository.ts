@@ -1,5 +1,4 @@
 import { User, Storekeeper, Consumer, PrismaClient } from "@prisma/client";
-import { UserDTO } from "@useCases/users/users.controller";
 import { IUserBaseRepository } from "./IUsersBaseRepository";
 import { provide } from "@expressots/core";
 import { prisma } from "db/prisma";
@@ -14,7 +13,7 @@ export class UserRepository implements IUserBaseRepository<Consumer> {
         this.db = prisma;
     }
 
-    async createConsumer(data: UserDTO): Promise<Consumer | null> {
+    async createConsumer(data: CreateUserDTO): Promise<Consumer | null> {
         if (data.cpf) {
             return await this.db.consumer.create({
                 data: {
@@ -33,7 +32,7 @@ export class UserRepository implements IUserBaseRepository<Consumer> {
         return null;
     }
     
-    async createStorekeeper(data: UserDTO): Promise<Storekeeper | null> {
+    async createStorekeeper(data: CreateUserDTO): Promise<Storekeeper | null> {
         if(data.cnpj){
             return await this.db.storekeeper.create({
                 data:{

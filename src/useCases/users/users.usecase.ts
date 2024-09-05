@@ -2,6 +2,7 @@ import { provide } from "@expressots/core";
 import { inject } from "inversify";
 import { PrismaProvider } from "@providers/prisma/prisma.provider";
 import { CreateUserDTO } from "dto/users/users.dto";
+import { BcryptProvider } from "@providers/bcrypt/bcrypt.provider";
 
 @provide(UserUsecase)
 export class UserUsecase {
@@ -9,11 +10,14 @@ export class UserUsecase {
     private readonly storekeeperRole:string = "STOREKEEPER";
     private readonly consumerRole:string = "CONSUMER";
     private prismaProvider:PrismaProvider;
+    private bcryptProvider:BcryptProvider;
 
     constructor(
         @inject(PrismaProvider) prismaProvider:PrismaProvider,
+        @inject(BcryptProvider) bcryptProvider:BcryptProvider
     ){
         this.prismaProvider = prismaProvider;
+        this.bcryptProvider = bcryptProvider;
     }
 
     async createNewUser(user:CreateUserDTO){
@@ -24,7 +28,10 @@ export class UserUsecase {
             const foundUser = await this.userExists(user);
             if(foundUser) throw new Error("Error: User already exists");
 
-            if(user.cpf && this.isConsumer(user)){
+            //encrypt user password
+            user = await this.hashPassword(user);
+            
+            if(user.cpf && this.isConsumer(user)){                
                 return await this.prismaProvider.createConsumer(user);
             }
 
@@ -58,5 +65,11 @@ export class UserUsecase {
         if(user.role === this.storekeeperRole && user.cpf && user.cnpj) return false;
         if(user.role === this.storekeeperRole && user.cnpj) return true;
         return false;
+    }
+
+    private async hashPassword(user:CreateUserDTO):Promise<CreateUserDTO>{
+        const hashPassword:string = await this.bcryptProvider.encrypt(user.password);
+        return { ...user, password:hashPassword };
+        
     }
 }
