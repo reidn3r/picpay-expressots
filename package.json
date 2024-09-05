@@ -29,6 +29,7 @@
     "express": "4.19.2",
     "inversify": "6.0.2",
     "reflect-metadata": "0.2.2",
+    "ts-retry": "^5.0.1",
     "tsconfig-paths": "4.2.0"
   },
   "devDependencies": {
