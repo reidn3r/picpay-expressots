@@ -1,40 +1,24 @@
-import { controller, Post, request, response } from "@expressots/adapter-express";
-import { Request, Response } from "express";
+import { controller, Post, response, body } from "@expressots/adapter-express";
+import { Response } from "express";
 import { BaseController, StatusCode } from "@expressots/core";
 import { UserUsecase } from "./users.usecase";
-import { ROLE } from "@prisma/client";
-import { ZodProvider } from "@providers/zod/zod.provider";
-
-export type UserDTO = {
-    name:string,
-    email:string,
-    password:string,
-    role:ROLE,
-    balance:number
-    cpf?:string | null;
-    cnpj?:string | null;
-}
+import { ValidateDTO } from "@expressots/core";
+import { CreateUserDTO } from "dto/users/users.dto";
 
 @controller("/v1")
 export class UserController extends BaseController {
     private userUsecase:UserUsecase;
-    private zodProvider:ZodProvider;
-
     constructor(
         userUsecase:UserUsecase,
-        zodProvider:ZodProvider
-
     ){
         super();
         this.userUsecase = userUsecase;
-        this.zodProvider = zodProvider;
     }
 
-    @Post("/create/user")
-    createNewUser(@request() req:Request, @response() res:Response){        
+    @Post("/create/user", ValidateDTO(CreateUserDTO))
+    createNewUser(@body() payload:CreateUserDTO,  @response() res:Response){        
         try{
-            const input_data = this.zodProvider.parseNewUser(req.body);
-            return this.callUseCaseAsync(this.userUsecase.createNewUser(input_data), res, StatusCode.Created);
+            return res.status(StatusCode.Created).json(this.userUsecase.createNewUser(payload));
         }
         catch(err:any){
             throw new Error("Error validating input data");

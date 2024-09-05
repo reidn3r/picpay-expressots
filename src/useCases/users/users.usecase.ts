@@ -1,11 +1,13 @@
 import { provide } from "@expressots/core";
-import { UserDTO } from "./users.controller";
 import { inject } from "inversify";
 import { PrismaProvider } from "@providers/prisma/prisma.provider";
+import { CreateUserDTO } from "dto/users/users.dto";
 
 @provide(UserUsecase)
 export class UserUsecase {
-
+    
+    private readonly storekeeperRole:string = "STOREKEEPER";
+    private readonly consumerRole:string = "CONSUMER";
     private prismaProvider:PrismaProvider;
 
     constructor(
@@ -14,10 +16,10 @@ export class UserUsecase {
         this.prismaProvider = prismaProvider;
     }
 
-    async createNewUser(user:UserDTO){
+    async createNewUser(user:CreateUserDTO){
         try{
-            if(user.role === "CONSUMER" && user.cnpj) throw new Error("Error: Consumer is not allowed to register a CNPJ");
-            if(user.role === "STOREKEEPER" && user.cpf) throw new Error("Error: Storekeeper is not allowed to register a CPF");
+            if(user.role === this.consumerRole && user.cnpj) throw new Error("Error: Consumer is not allowed to register a CNPJ");
+            if(user.role === this.storekeeperRole && user.cpf) throw new Error("Error: Storekeeper is not allowed to register a CPF");
             
             const foundUser = await this.userExists(user);
             if(foundUser) throw new Error("Error: User already exists");
@@ -38,23 +40,23 @@ export class UserUsecase {
         }
     }
 
-    private async userExists(user:UserDTO):Promise<boolean>{
+    private async userExists(user: CreateUserDTO):Promise<boolean>{
         const foundUser = await this.prismaProvider.findByEmail(user.email);
         return foundUser ? true : false;
     }
     
-    private isConsumer(user:UserDTO):boolean{
-        if(!user.role || user.role == "STOREKEEPER") return false;
-        if(user.role === "CONSUMER" && user.cnpj) return false;
-        if(user.role === "CONSUMER" && user.cpf && user.cnpj) return false;
-        if(user.role === "CONSUMER" && user.cpf) return true;
+    private isConsumer(user: CreateUserDTO):boolean{
+        if(!user.role || user.role == this.storekeeperRole) return false;
+        if(user.role === this.consumerRole && user.cnpj) return false;
+        if(user.role === this.consumerRole && user.cpf && user.cnpj) return false;
+        if(user.role === this.consumerRole && user.cpf) return true;
         return false;
     }
-    private isStorekeeper(user:UserDTO):boolean{
-        if(!user.role || user.role == "CONSUMER") return false;
-        if(user.role === "STOREKEEPER" && user.cpf) return false;
-        if(user.role === "STOREKEEPER" && user.cpf && user.cnpj) return false;
-        if(user.role === "STOREKEEPER" && user.cnpj) return true;
+    private isStorekeeper(user: CreateUserDTO):boolean{
+        if(!user.role || user.role == this.consumerRole) return false;
+        if(user.role === this.storekeeperRole && user.cpf) return false;
+        if(user.role === this.storekeeperRole && user.cpf && user.cnpj) return false;
+        if(user.role === this.storekeeperRole && user.cnpj) return true;
         return false;
     }
 }

@@ -3,6 +3,7 @@ import { ITransactionsBaseRepository } from "./ITransactionsBaseRepository";
 import { PrismaClient, Transactions } from "@prisma/client";
 import { TransactionDTO } from "@useCases/transaction/transaction.controller";
 import { prisma } from "db/prisma";
+import { CreateTransactionDTO } from "dto/transactions/transactions.dto";
 
 @provide(TransactionRepository)
 export class TransactionRepository implements ITransactionsBaseRepository<Transactions> {

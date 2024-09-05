@@ -3,6 +3,7 @@ import { UserDTO } from "@useCases/users/users.controller";
 import { IUserBaseRepository } from "./IUsersBaseRepository";
 import { provide } from "@expressots/core";
 import { prisma } from "db/prisma";
+import { CreateUserDTO } from "dto/users/users.dto";
 
 @provide(UserRepository)
 export class UserRepository implements IUserBaseRepository<Consumer> {

@@ -8,7 +8,6 @@ import { AxiosProvider } from "@providers/axios/axios.provider";
 import { UserDTO } from "@useCases/users/users.controller";
 import { UserRepository } from "repository/users/user.repository";
 
-
 @provide(PrismaProvider)
 export class PrismaProvider implements IPrismaProvider{
     private transactionRepository:TransactionRepository;

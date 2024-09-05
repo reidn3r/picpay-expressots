@@ -1,10 +1,10 @@
 import { provide } from "@expressots/core";
 import { Transactions } from "@prisma/client";
-import { TransactionDTO } from "./transaction.controller";
 import { inject } from "inversify";
 import { User } from "@prisma/client";
 import { PrismaProvider } from "@providers/prisma/prisma.provider";
 import { AxiosProvider } from "@providers/axios/axios.provider";
+import { CreateTransactionDTO } from "dto/transactions/transactions.dto";
 
 @provide(TransactionUsecase)
 export class TransactionUsecase {
@@ -20,9 +20,9 @@ export class TransactionUsecase {
         this.axiosProvider = axiosProvider;
     }
 
-    async createTransaction(transaction: TransactionDTO): Promise<TransactionDTO | null> {
-        try {
-            const [payerUser, payeeUser] = await Promise.all([
+    async createTransaction(transaction: CreateTransactionDTO):Promise<CreateTransactionDTO | null>{
+        try{
+            const [ payerUser, payeeUser ] = await Promise.all([
                 this.prismaProvider.findUserById(transaction.payerId),
                 this.prismaProvider.findUserById(transaction.payeeId)
             ]);

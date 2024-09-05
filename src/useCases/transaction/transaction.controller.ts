@@ -1,34 +1,24 @@
-import { controller, Get, Post, request, response } from '@expressots/adapter-express';
-import { BaseController, StatusCode } from '@expressots/core';
-import { Request, Response } from 'express';
+import { controller, Get, Post, response, body } from '@expressots/adapter-express';
+import { BaseController, StatusCode, ValidateDTO } from '@expressots/core';
+import { Response } from 'express';
 import { TransactionUsecase } from './transaction.usecase';
-import { ZodProvider } from '@providers/zod/zod.provider';
-
-export type TransactionDTO = {
-    amount:number,
-    payeeId:string,
-    payerId:string,
-}
+import { CreateTransactionDTO } from 'dto/transactions/transactions.dto';
 
 @controller("/v1")
 export class TransactionController extends BaseController{
     private useCase:TransactionUsecase;
-    private zodProvider:ZodProvider;
 
     constructor(
         useCase:TransactionUsecase,
-        zodProvider:ZodProvider
     ){
         super();
         this.useCase = useCase;
-        this.zodProvider = zodProvider;
     }
 
-    @Post("/create/transaction")
-    createTransaction(@request() req:Request, @response() res:Response){
+    @Post("/create/transaction", ValidateDTO(CreateTransactionDTO))
+    createTransaction(@body() payload:CreateTransactionDTO, @response() res:Response){
         try{
-            const newTransaction = this.zodProvider.parseNewTransaction(req.body);
-            return this.callUseCaseAsync(this.useCase.createTransaction(newTransaction), res, StatusCode.Created);
+            return res.status(StatusCode.Created).json(this.useCase.createTransaction(payload));
         }
         catch(err:any){
             throw new Error("Error validating input data");
@@ -38,7 +28,7 @@ export class TransactionController extends BaseController{
     
     @Get("/transaction/:id")
     transactionDetails(@response() res:Response){
-        return this.callUseCaseAsync(this.useCase.findAllTransactions(), res, StatusCode.OK);
+        return res.status(StatusCode.OK).json(this.useCase.findAllTransactions());
     }
 
 
