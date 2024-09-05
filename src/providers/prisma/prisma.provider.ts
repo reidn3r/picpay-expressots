@@ -27,7 +27,7 @@ export class PrismaProvider implements IPrismaProvider{
 
     async createTransaction(transaction:CreateTransactionDTO): Promise<CreateTransactionDTO | null> {
         const newTransaction:CreateTransactionDTO | null = await this.transactionRepository.create(transaction);
-        await this.axiosProvider.notify();
+        this.axiosProvider.notify();
         return newTransaction;
     }
 
