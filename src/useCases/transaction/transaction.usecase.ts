@@ -62,4 +62,13 @@ export class TransactionUsecase {
         const data = await this.prismaProvider.findAllTransactions();
         return !data ? [] : data;
     }
+
+    async fetchTransactionsByIndex(index:number):Promise<Transactions[]>{
+        try{
+            return await this.prismaProvider.fetchTransacionsPage(index);
+        }
+        catch(err:any){
+            throw new Error(err.message);
+        }
+    }
 }

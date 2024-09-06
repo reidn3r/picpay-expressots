@@ -5,5 +5,7 @@ export interface ITransactionsBaseRepository<T> {
     delete(id:String):Promise<String | null>;
     findById(id:String):Promise<T | null>;
     findAll():Promise<T[]>
+    fetchTransacionsPage(index:number):Promise<T[]>;
+
     
 }

@@ -1,8 +1,9 @@
-import { controller, Get, Post, response, body } from '@expressots/adapter-express';
+import { controller, Get, Post, response, body, param } from '@expressots/adapter-express';
 import { BaseController, StatusCode, ValidateDTO } from '@expressots/core';
 import { Response } from 'express';
 import { TransactionUsecase } from './transaction.usecase';
 import { CreateTransactionDTO } from 'dto/transactions/transactions.dto';
+import { IndexDTO } from 'dto/transactions/index.dto';
 
 @controller("/v1")
 export class TransactionController extends BaseController{
@@ -26,10 +27,10 @@ export class TransactionController extends BaseController{
 
     }
     
-    @Get("/transaction/all")
-    transactionDetails(@response() res:Response){
-        // return res.status(StatusCode.OK).json(this.useCase.findAllTransactions());
-        return this.callUseCaseAsync(this.useCase.findAllTransactions(), res, StatusCode.Created);
+    @Get("/transaction/:index")
+    transactionDetails(@param('index') index:string, @response() res:Response){
+        const intIndex:number = parseInt(index);
+        return this.callUseCaseAsync(this.useCase.fetchTransactionsByIndex(intIndex), res, StatusCode.OK);
     }
 
 

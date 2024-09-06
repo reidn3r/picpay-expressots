@@ -20,4 +20,7 @@ export interface IPrismaProvider {
     delete(id: String): Promise<String | null>;
 
     findAllUsers(): Promise<Consumer[]>;
+    
+    fetchTransacionsPage(index:number):Promise<Transactions[]>;
+
 }

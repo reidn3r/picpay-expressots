@@ -74,5 +74,9 @@ export class PrismaProvider implements IPrismaProvider{
         return await this.userRepository.findAll();
     }
 
+    async fetchTransacionsPage(index:number):Promise<Transactions[]>{
+        return await this.transactionRepository.fetchTransacionsPage(index);
+    }
+
 
 }

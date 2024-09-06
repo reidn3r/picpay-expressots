@@ -8,6 +8,7 @@ import { CreateTransactionDTO } from "dto/transactions/transactions.dto";
 export class TransactionRepository implements ITransactionsBaseRepository<Transactions> {
 
     private db:PrismaClient;
+    private readonly pageElements:number = 10;
 
     constructor(){
         //@inject?
@@ -46,5 +47,12 @@ export class TransactionRepository implements ITransactionsBaseRepository<Transa
     }
     async findAll():Promise<Transactions[]>{
         return await this.db.transactions.findMany();
+    }
+
+    async fetchTransacionsPage(index:number):Promise<Transactions[]>{
+        return await this.db.transactions.findMany({
+            skip: (index && index != 1) ? index * 10 : 0,
+            take: this.pageElements
+        })
     }
 }

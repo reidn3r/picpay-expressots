@@ -6,25 +6,29 @@ export class ValidateCPF implements ValidatorConstraintInterface {
         if (!cpf || cpf.length !== 11) return false;
         let digits:number[] = cpf.split("").map(Number);
         let sum:number = 0;
-        let q:number = 0;
     
-        for(let i=10; i > 1; i--){
-            sum += digits[10-i] * i;
-        }
-        
+        let q = this.sumDigits(digits, 10, 1);
         q = (sum * 10) % 11 == 10 ? 0 : (sum * 10) % 11;
         if(q != digits[9]) return false;
         
-        sum = 0;
-        for(let i = 11; i > 1; i--){
-            sum += digits[11-i]*i;
-        }
+        
+        q = this.sumDigits(digits, 11, 1);
         q = (sum * 10) % 11 == 10 ? 0 : (sum * 10) % 11;
         if(q != digits[10]) return false;
+        
         return true;
     }
-
+    
     defaultMessage(validationArguments?: ValidationArguments): string {
         return "Invalid CPF format";
+    }
+    
+    
+    private sumDigits(digits:number[], startIndex:number, endIndex:number):number{
+        let sum=0;
+        for(let i=startIndex; i > endIndex; i--){
+            sum += digits[startIndex-i] * i;
+        }
+        return sum;
     }
 }
