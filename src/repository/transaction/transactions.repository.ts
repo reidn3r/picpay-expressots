@@ -17,7 +17,7 @@ export class TransactionRepository implements ITransactionsBaseRepository<Transa
 
     async create(data:CreateTransactionDTO):Promise<Transactions | null>{
         //Update funds and create transaction
-        const [updatedPayeeFunds, updatedPayerFunds, transaction] = await Promise.all([
+        const [updatedPayeeFunds, updatedPayerFunds, transaction] = await prisma.$transaction([
             this.db.user.update({
                 where: { id: data.payeeId },
                 data:{ balance : { increment: data.amount } }
