@@ -21,7 +21,6 @@ export class App extends AppExpress {
 
     protected configureServices(): void {
         this.provider.register(Env);
-
         this.middleware.addBodyParser();
         this.middleware.setErrorHandler();
         this.middleware.addCors({
