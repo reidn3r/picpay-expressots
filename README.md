@@ -1,5 +1,5 @@
-# Picpay ExpressoTS
-<p> <a href="https://github.com/PicPay/picpay-desafio-backend" target="_blank"> Enunciado do Desafio </a> - (07/2024)</p>
+# Picpay ExpressoTS - (07/2024)
+<p> <a href="https://github.com/PicPay/picpay-desafio-backend" target="_blank"> Enunciado do Desafio </a></p>
 <hr>
 
 
